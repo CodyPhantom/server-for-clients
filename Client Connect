@@ -1,0 +1,34 @@
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net.Sockets;
+using System.Net;
+
+namespace opgave_6_Klient_program
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string dataSomString = "";
+            string tastaturInput = "";
+             
+            TcpClient klient = new TcpClient();
+            klient.Connect("127.0.0.1", 4444);
+            NetworkStream dataStrøm = klient.GetStream();
+            Console.WriteLine("skriv noget til serverne");
+            tastaturInput = Console.ReadLine();
+            // Laver stringen tastaturInput om til et byte[] (byte-Array)
+            byte[] data = Encoding.ASCII.GetBytes(tastaturInput);
+
+            // Skriver data til dataStrøm (Vores TCP-klient)
+            dataStrøm.Write(data, 0, data.Length);
+
+            // bliv ved indtil, der skrives 'quit' på tasturet
+            while (tastaturInput.ToLower() != "quit") ;
+
+        }
+    }
+}
