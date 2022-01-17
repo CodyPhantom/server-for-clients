@@ -1,0 +1,48 @@
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net.Sockets;
+using System.Net;
+
+namespace opgave_6_server
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string dataSomString = "";
+
+            int antalLæsteBytes;
+         // her opretter jeg en variabel af typen IPAddress og giver den
+         // navnet serverAddress og værdien: 127.0.0.1 (loop-back)
+
+            IPAddress serverAdresse = IPAddress.Parse("127.0.0.1");
+
+            // Her oprettes en integer med portnummeret, som serveren skal lytte på
+
+            int portNummer = 4444;
+
+            TcpListener lytter = new TcpListener(serverAdresse, portNummer);
+            Console.WriteLine("lytter oprettet");
+            lytter.Start();
+            Console.WriteLine("lytteren lytter");
+
+            TcpClient klient = lytter.AcceptTcpClient();
+            Console.WriteLine("en klient har koblet sig op til serveren ");
+            // Her læses data fra klienten sekventielt
+            NetworkStream indStrøm = klient.GetStream();
+
+            byte[] dataSomBytes = new byte[klient.ReceiveBufferSize];
+
+             antalLæsteBytes = indStrøm.Read(dataSomBytes, 0, Convert.ToInt32(klient.ReceiveBufferSize));
+
+            dataSomString = Encoding.ASCII.GetString(dataSomBytes, 0, antalLæsteBytes);
+            Console.WriteLine($"Her er hvad klienten skriver:\n{dataSomString}");
+
+        }
+
+
+    }
+}
